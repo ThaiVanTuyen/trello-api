@@ -1,32 +1,48 @@
+/* eslint-disable no-console */
 /**
  * Updated by trungquandev.com's author on August 17 2023
  * YouTube: https://youtube.com/@trungquandev
  * "A bit of fragrance clings to the hand that gives flowers!"
  */
 
+import 'dotenv/config'
 import express from 'express'
-import { mapOrder } from '~/utils/sorts.js'
+import { Connect_DB, Close_DB } from './config/mongodb'
+import { env } from './config/environment'
+import { APIs_V1 } from './routes/v1'
+import { errorHandlingMiddleware } from './middlewares/errorHandlingMiddleware'
 
-const app = express()
+const exitHook = require('async-exit-hook')
 
-const hostname = 'localhost'
-const port = 8017
+const StartServer = async () => {
+  console.log('Starting server...')
+  const app = express()
 
-app.get('/', (req, res) => {
-  // Test Absolute import mapOrder
-  console.log(mapOrder(
-    [ { id: 'id-1', name: 'One' },
-      { id: 'id-2', name: 'Two' },
-      { id: 'id-3', name: 'Three' },
-      { id: 'id-4', name: 'Four' },
-      { id: 'id-5', name: 'Five' } ],
-    ['id-5', 'id-4', 'id-2', 'id-3', 'id-1'],
-    'id'
-  ))
-  res.end('<h1>Hello World!</h1><hr>')
+  app.use(express.json())
+
+  app.get('/', (req, res) => {
+    console.log(env.AUTHOR)
+    res.end('<h1>Hello World!</h1><hr>')
+  })
+
+  app.use('/v1', APIs_V1)
+
+  app.use(errorHandlingMiddleware)
+
+  app.listen(env.APP_PORT, env.APP_HOST, () => {
+    console.log(`I am running at http://${ env.APP_HOST }:${ env.APP_PORT }/`)
+  })
+}
+exitHook(() => {
+  Close_DB()
+  console.log('Server is closed!')
 })
 
-app.listen(port, hostname, () => {
-  // eslint-disable-next-line no-console
-  console.log(`Hello Trung Quan Dev, I am running at http://${ hostname }:${ port }/`)
-})
+Connect_DB()
+  .then(() => console.log('Connected successfully to the database!'))
+  .then(() => StartServer())
+  .catch(error => {
+    console.error(error)
+    process.exit(0)
+  })
+
