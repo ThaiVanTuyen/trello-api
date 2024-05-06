@@ -15,5 +15,7 @@ Router.route('/')
     res.status(StatusCodes.OK).json({ message: 'Get alls list boards' })
   })
   .post(boardValidation.CreateNewBoard, boardController.CreateNewBoard)
-
+Router.route('/:boardId')
+  .get(boardController.GetBoard)
+  .put()
 export const BoardRoute = Router

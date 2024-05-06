@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * Updated by trungquandev.com's author on August 17 2023
  * YouTube: https://youtube.com/@trungquandev
@@ -5,7 +6,7 @@
  */
 import { slugify } from '~/utils/formatters'
 import { boardModel } from '~/models/boardModel'
-const boardService = async (reqbody) => {
+const CreateNewBoard = async (reqbody) => {
   const newBoard = {
     ...reqbody,
     slug: slugify(reqbody.title)
@@ -17,4 +18,14 @@ const boardService = async (reqbody) => {
   console.log('createdBoard', getNewBoard)
   return getNewBoard
 }
-export default boardService
+const GetBoard = async (boardId) => {
+  console.log('Get Board Services: ', boardId)
+  const getBoard = await boardModel.GetBoard(boardId)
+  console.log('Get Board', getBoard)
+  return getBoard
+}
+
+export const boardService = {
+  CreateNewBoard,
+  GetBoard
+}

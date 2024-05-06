@@ -4,6 +4,7 @@
  * "A bit of fragrance clings to the hand that gives flowers!"
  */
 import Joi from 'joi'
+import { ObjectId } from 'mongodb'
 import { Get_DB } from '~/config/mongodb'
 import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from '~/utils/validators'
 
@@ -26,7 +27,8 @@ const BOARD_COLLECTION_SCHEMA = Joi.object({
 
 const createdBoard = async (data) => {
   try {
-    return await Get_DB().collection(BOARD_COLLECTION_NAME).insertOne(data)
+    const dataValidation = await BOARD_COLLECTION_SCHEMA.validateAsync(data, { abortEarly: false })
+    return await Get_DB().collection(BOARD_COLLECTION_NAME).insertOne(dataValidation)
   } catch (error) {
     throw new Error(error)
   }
@@ -35,7 +37,15 @@ const createdBoard = async (data) => {
 const findBoardById = async (boardId) => {
   try {
     return await Get_DB().collection(BOARD_COLLECTION_NAME).findOne({
-      _id: boardId })
+      _id: new ObjectId(String(boardId)) })
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+const GetBoard = async (boardId) => {
+  try {
+    return await Get_DB().collection(BOARD_COLLECTION_NAME).findOne({
+      _id: new ObjectId(String(boardId)) })
   } catch (error) {
     throw new Error(error)
   }
@@ -45,5 +55,6 @@ export const boardModel = {
   BOARD_COLLECTION_NAME,
   BOARD_COLLECTION_SCHEMA,
   createdBoard,
-  findBoardById
+  findBoardById,
+  GetBoard
 }
