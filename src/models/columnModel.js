@@ -5,6 +5,8 @@
  */
 
 import Joi from 'joi'
+import { ObjectId } from 'mongodb'
+import { Get_DB } from '~/config/mongodb'
 import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from '~/utils/validators'
 
 // Define Collection (name & schema)
@@ -23,7 +25,31 @@ const COLUMN_COLLECTION_SCHEMA = Joi.object({
   _destroy: Joi.boolean().default(false)
 })
 
+const createdColumn = async (data) => {
+  try {
+    const dataValidation = await COLUMN_COLLECTION_SCHEMA.validateAsync(data, { abortEarly: false })
+    const _data = {
+      ...dataValidation,
+      boardId: new ObjectId(String(dataValidation.boardId))
+    }
+    return await Get_DB().collection(COLUMN_COLLECTION_NAME).insertOne(_data)
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
+const findColumnById = async (boardId) => {
+  try {
+    return await Get_DB().collection(COLUMN_COLLECTION_NAME).findOne({
+      _id: new ObjectId(String(boardId)) })
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
 export const columnModel = {
   COLUMN_COLLECTION_NAME,
-  COLUMN_COLLECTION_SCHEMA
+  COLUMN_COLLECTION_SCHEMA,
+  createdColumn,
+  findColumnById
 }

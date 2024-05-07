@@ -5,6 +5,8 @@
  */
 
 import Joi from 'joi'
+import { ObjectId } from 'mongodb'
+import { Get_DB } from '~/config/mongodb'
 import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from '~/utils/validators'
 
 // Define Collection (name & schema)
@@ -21,7 +23,32 @@ const CARD_COLLECTION_SCHEMA = Joi.object({
   _destroy: Joi.boolean().default(false)
 })
 
+const createdCard = async (data) => {
+  try {
+    const dataValidation = await CARD_COLLECTION_SCHEMA.validateAsync(data, { abortEarly: false })
+    const _data = {
+      ...dataValidation,
+      boardId: new ObjectId(String(dataValidation.boardId)),
+      columnId: new ObjectId(String(dataValidation.columnId))
+    }
+    return await Get_DB().collection(CARD_COLLECTION_NAME).insertOne(_data)
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
+const findCardById = async (boardId) => {
+  try {
+    return await Get_DB().collection(CARD_COLLECTION_NAME).findOne({
+      _id: new ObjectId(String(boardId)) })
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
 export const cardModel = {
   CARD_COLLECTION_NAME,
-  CARD_COLLECTION_SCHEMA
+  CARD_COLLECTION_SCHEMA,
+  createdCard,
+  findCardById
 }

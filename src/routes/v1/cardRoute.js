@@ -5,6 +5,6 @@ import { cardController } from '~/controllers/cardController'
 const Router = express.Router()
 
 Router.route('/')
-  .post(cardValidation.CreateNewcard, cardController.CreateNewcard)
+  .post(cardValidation.CreateNewCard, cardController.CreateNewCard)
 
 export const cardRoute = Router

@@ -5,6 +5,6 @@ import { columnController } from '~/controllers/columnController'
 const Router = express.Router()
 
 Router.route('/')
-  .post(columnValidation.CreateNewcolumn, columnController.CreateNewcolumn)
+  .post(columnValidation.CreateNewColumn, columnController.CreateNewColumn)
 
 export const columnRoute = Router

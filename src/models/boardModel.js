@@ -45,6 +45,7 @@ const findBoardById = async (boardId) => {
     throw new Error(error)
   }
 }
+
 const GetBoard = async (boardId) => {
   try {
     const board = await Get_DB().collection(BOARD_COLLECTION_NAME).aggregate([
