@@ -15,13 +15,10 @@ const CreateNewBoard = async (reqbody) => {
   const createdBoard = await boardModel.createdBoard(newBoard)
 
   const getNewBoard = await boardModel.findBoardById(createdBoard.insertedId)
-  console.log('createdBoard', getNewBoard)
   return getNewBoard
 }
 const GetBoard = async (boardId) => {
-  console.log('Get Board Services: ', boardId)
   const getBoard = await boardModel.GetBoard(boardId)
-  console.log('Get Board', getBoard)
   return getBoard
 }
 

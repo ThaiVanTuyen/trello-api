@@ -5,15 +5,15 @@
  * "A bit of fragrance clings to the hand that gives flowers!"
  */
 import Joi from 'joi'
-import { StatusCodes } from 'http-status-codes'
 import ApiError from '~/utils/ApiError'
-import { BOARD_TYPE } from '~/utils/constants'
+import { StatusCodes } from 'http-status-codes'
+import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from '~/utils/validators'
 
-const CreateNewBoard = async (req, res, next) => {
+
+const CreateNewColumn = async (req, res, next) => {
   const correctCondition = Joi.object({
-    title: Joi.string().required().min(3).max(50).trim().strict(),
-    description: Joi.string().required().min(3).max(256).trim().strict(),
-    type: Joi.string().valid(BOARD_TYPE.PUBLIC, BOARD_TYPE.PRIVATE).required()
+    boardId: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
+    title: Joi.string().required().min(3).max(50).trim().strict()
   })
   try {
     await correctCondition.validateAsync(req.body, { abortEarly: false })
@@ -24,6 +24,6 @@ const CreateNewBoard = async (req, res, next) => {
   }
 }
 
-export const boardValidation = {
-  CreateNewBoard
+export const columnValidation = {
+  CreateNewColumn
 }
