@@ -46,6 +46,16 @@ const findBoardById = async (boardId) => {
   }
 }
 
+const pushColumnOrderIds = async (column) => {
+  try {
+    const board = await Get_DB().collection(BOARD_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(String(column.boardId)) },
+      { $push: { columnOrderIds: column._id } },
+      { returnDocument: 'after' })
+    return board.value
+  } catch (error) {throw new Error(error)}
+}
+
 const GetBoard = async (boardId) => {
   try {
     const board = await Get_DB().collection(BOARD_COLLECTION_NAME).aggregate([
@@ -88,5 +98,6 @@ export const boardModel = {
   BOARD_COLLECTION_SCHEMA,
   createdBoard,
   findBoardById,
-  GetBoard
+  GetBoard,
+  pushColumnOrderIds
 }
