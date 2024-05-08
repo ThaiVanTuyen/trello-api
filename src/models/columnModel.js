@@ -30,6 +30,7 @@ const createdColumn = async (data) => {
     const dataValidation = await COLUMN_COLLECTION_SCHEMA.validateAsync(data, { abortEarly: false })
     const _data = {
       ...dataValidation,
+      cards: [],
       boardId: new ObjectId(String(dataValidation.boardId))
     }
     return await Get_DB().collection(COLUMN_COLLECTION_NAME).insertOne(_data)
@@ -53,7 +54,7 @@ const pushCardOrderIds = async (card) => {
       { _id: new ObjectId(String(card.columnId)) },
       { $push: { cardOrderIds: card._id } },
       { returnDocument: 'after' })
-    return column.value
+    return column
   } catch (error) {throw new Error(error)}
 }
 

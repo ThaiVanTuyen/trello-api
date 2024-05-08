@@ -52,7 +52,7 @@ const pushColumnOrderIds = async (column) => {
       { _id: new ObjectId(String(column.boardId)) },
       { $push: { columnOrderIds: column._id } },
       { returnDocument: 'after' })
-    return board.value
+    return board
   } catch (error) {throw new Error(error)}
 }
 
